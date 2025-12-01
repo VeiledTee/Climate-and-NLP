@@ -4,16 +4,20 @@ import re
 import smtplib
 from email.message import EmailMessage
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Optional, Union
 
 import pandas as pd
-import tiktoken
+import nltk
+from nltk.tokenize import word_tokenize
 
 from config import CONFIG
 from utils import convert_seconds
 
+
+nltk.download("punkt")
+
 # Mapping from internal model keys to display names
-MODEL_DISPLAY_NAMES: Dict[str, str] = {
+MODEL_DISPLAY_NAMES: dict[str, str] = {
     "qwen3-0.6b_q": "Qwen3 0.6B (Base)",
     "qwen3-0.6b_q+r": "Qwen3 0.6B (RAG)",
     "qwen3-1.7b_q": "Qwen3 1.7B (Base)",
@@ -28,7 +32,7 @@ MODEL_DISPLAY_NAMES: Dict[str, str] = {
     "qwen3-32b_q+r": "Qwen3 32B (RAG)",
 }
 
-RESULT_COLS: Dict[str, Tuple[str, str]] = {
+RESULT_COLS: dict[str, tuple[str, str]] = {
     "energy": ("inference_energy_consumed (kWh)", "retrieval_energy_consumed (kWh)"),
     "emissions": ("inference_emissions (kg)", "retrieval_emissions (kg)"),
     "time": ("inference_duration (s)", "retrieval_duration (s)"),
@@ -100,20 +104,19 @@ def extract_model_size(display_name: str) -> float:
     return float(match.group(1)) if match else 0.0
 
 
-def count_tokens(text: Union[str, object], encoding_name: str = "cl100k_base") -> int:
-    """Counts the number of tokens in a text string.
+def count_tokens(text: Union[str, object]) -> int:
+    """Counts the number of tokens in a text string using NLTK's tokenizer.
 
     Args:
         text: The text to count tokens in (non-string inputs return 0)
-        encoding_name: The encoding to use for token counting
 
     Returns:
         The number of tokens in the text
     """
     if not isinstance(text, str):
         return 0
-    encoding = tiktoken.get_encoding(encoding_name)
-    return len(encoding.encode(text))
+    tokens = word_tokenize(text)
+    return len(tokens)
 
 
 def _load(path: Path) -> pd.DataFrame:
@@ -166,7 +169,7 @@ def summarise(
     path: Path,
     context_used: bool,
     dataset_version: Union[str, int],
-) -> Dict[str, Union[str, float, int]]:
+) -> dict[str, Union[str, float, int]]:
     """Summarizes the results from a model evaluation CSV file.
 
     Args:
@@ -310,12 +313,12 @@ def send_email_with_attachment(
 
 
 def filter_files_by_dataset_version(
-    files: List[Path], dataset_version: str
-) -> List[Path]:
+    files: list[Path], dataset_version: str
+) -> list[Path]:
     """Filters files based on dataset version criteria.
 
     Args:
-        files: List of file paths to filter
+        files: list of file paths to filter
         dataset_version: Version of dataset to filter for
 
     Returns:
@@ -350,11 +353,11 @@ def generate_output_filename(model_filter: Optional[str]) -> str:
     return "summary"
 
 
-def determine_dataset_version(filename_parts: List[str]) -> str:
+def determine_dataset_version(filename_parts: list[str]) -> str:
     """Determines the dataset version from filename parts.
 
     Args:
-        filename_parts: List of parts from splitting the filename
+        filename_parts: list of parts from splitting the filename
 
     Returns:
         The dataset version string
