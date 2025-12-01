@@ -14,7 +14,7 @@ def safe_run(tag, file_suffix: None | str = ""):
         logger.exception(f"Run {tag} failed: {e}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # First config
     CONFIG.think = False
     CONFIG.gold = True

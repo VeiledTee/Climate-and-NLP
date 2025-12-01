@@ -111,9 +111,7 @@ def main():
     # Load Data
     try:
         # Assuming the updated analysis.py created this file with the new 'total_energy_kWh' column
-        df = pd.read_csv(
-            r"\results\qwen3_summary.csv"
-        )
+        df = pd.read_csv(r"\results\qwen3_summary.csv")
     except FileNotFoundError:
         print(
             "Error: 'qwen3_summary.csv' not found. Please ensure the file is in the same directory."

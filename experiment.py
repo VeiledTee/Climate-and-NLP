@@ -126,22 +126,22 @@ def format_time(seconds: float) -> str:
 
 
 def run_model_mode(
-        model_name: str,
-        mode_tag: str,
-        include_passage: bool,
-        dataset,
-        wiki_data: tuple,
-        file_suffix: None | str = "",
+    model_name: str,
+    mode_tag: str,
+    include_passage: bool,
+    dataset,
+    wiki_data: tuple,
+    file_suffix: None | str = "",
 ) -> None:
     # Run evaluation for a specific model and mode, with concurrent inference and batched writes
     csv_path = (
-            CONFIG.result_dir
-            / f"nq_{model_name.split('/')[-1].replace(':', '-')}_{mode_tag}"
-              f"{'_1000' if 'mini' in CONFIG.dataset_file else ''}"
-              f"{'_think' if CONFIG.think else ''}"
-              f"{'_long' if CONFIG.gold == True and 'r' in mode_tag else ''}"
-              f"{'_first' if CONFIG.gold == False and 'r' in mode_tag else ''}"
-              f"{'_' + file_suffix if file_suffix != '' else ''}.csv"
+        CONFIG.result_dir
+        / f"nq_{model_name.split('/')[-1].replace(':', '-')}_{mode_tag}"
+        f"{'_1000' if 'mini' in CONFIG.dataset_file else ''}"
+        f"{'_think' if CONFIG.think else ''}"
+        f"{'_long' if CONFIG.gold == True and 'r' in mode_tag else ''}"
+        f"{'_first' if CONFIG.gold == False and 'r' in mode_tag else ''}"
+        f"{'_' + file_suffix if file_suffix != '' else ''}.csv"
     )
     logger.info(f"Saving results to: {csv_path}")
     start_idx = get_resume_index(csv_path)
@@ -173,20 +173,20 @@ def run_model_mode(
     result_buffer = []
 
     # Spin up LM
-    _ = inference("Ready?", model_name, mode_tag, 'ollama')
+    _ = inference("Ready?", model_name, mode_tag, "ollama")
 
     # Loop through all prompts for current model
     for idx, sample, prompt, ret_metrics in tqdm(
-            jobs, desc=f"{model_name} ({mode_tag})", total=len(jobs)
+        jobs, desc=f"{model_name} ({mode_tag})", total=len(jobs)
     ):
-        full_output, inf_metrics = inference(prompt, model_name, mode_tag, 'ollama')
+        full_output, inf_metrics = inference(prompt, model_name, mode_tag, "ollama")
 
         llm_prediction = extract_prediction(full_output)
 
         em = -1
         f1 = -1
         for short_answer in set(
-                [answer[0] for answer in sample["short_answers"] if len(answer) > 0]
+            [answer[0] for answer in sample["short_answers"] if len(answer) > 0]
         ):
             instance_em = exact_match(llm_prediction, short_answer)
             if instance_em > em:
@@ -290,7 +290,7 @@ def extract_prediction(full_output: str) -> str:
         full_output = full_output.split("Answer:")[-1]
     for prefix in ["The answer is:", "Answer:", "answer:", "A:", "a:"]:
         if full_output.lower().startswith(prefix.lower()):
-            full_output = full_output[len(prefix):]
+            full_output = full_output[len(prefix) :]
 
     # Fallback is taking the original output
     return full_output.strip()

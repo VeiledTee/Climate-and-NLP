@@ -1,15 +1,8 @@
 import logging
 import os
 
-import torch
 from codecarbon import EmissionsTracker
 from ollama import chat
-from transformers import (
-    AutoModelForCausalLM,
-    AutoTokenizer,
-    PreTrainedModel,
-    PreTrainedTokenizer,
-)
 
 from config import CONFIG
 
