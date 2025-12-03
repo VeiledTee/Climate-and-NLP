@@ -4,6 +4,7 @@
 ### Prerequisites
 
   * Python (3.10 recommended)
+  * Ensure "nq_mini_1000.csv" file is in the "data" directory.
 
 ### Step 1: Clone the Repository
 
@@ -23,7 +24,7 @@ pip install -r requirements.txt
 
 ## ▶️ Usage and Running Experiments
 
-The core functionality of the project can be executed via the `main.py` script or dedicated experiment runners. Note that (Ollama)[https://ollama.com/] must be installed for this to work.
+The core functionality of the project can be executed via the `main.py` script or dedicated experiment runners. Note that [Ollama](https://ollama.com/) must be installed for this to work.
 
 ### Running a Full Experiment
 
